@@ -6,6 +6,8 @@ const PORT = process.env.PORT || 3002;
 
 // socket server singleton: listening for events at localhost:3001
 const server = new Server();
+
+// creates namespace
 const caps = server.of('/caps');
 
 function logger(event, payload) {
@@ -16,36 +18,27 @@ function logger(event, payload) {
   });
 }
 
+//create / allow for connections
 caps.on('connection', (socket) => {
   console.log('Socket connected to caps namespace', socket.id);
-  // checkout socket.onAny() to see all events
 
-  socket.on('JOIN', (room) => {
-    console.log('Rooms ---->', socket.adapter.rooms);
-    console.log('payload is the room ----->', room);
-    socket.join(room);
+  socket.onAny((event, payload) => {
+    const time = new Date();
+    console.log('EVENT:', {event, time, payload});
   });
 
-  socket.on('pickup', (payload) => {
-    logger('pickup', payload);
-    caps.emit('pickup', payload);
+  socket.on('PICKUP', (payload) => {
+    socket.broadcast.emit('PICKUP', payload);
   });
 
-  // these will use the caps.to(payload.store).emit() once the driver is set up to join a room as well.
-  socket.on('in-transit', (payload) => {
-    logger('in-transit', payload);
-    caps.emit('in-transit', payload);
+  socket.on('IN-TRANSIT', (payload) => {
+    socket.broadcast.emit('IN-TRANSIT', payload);
   });
 
-  socket.on('delivered', (payload) => {
-    logger('delivered', payload);
-    caps.emit('delivered', payload);
+  socket.on('DELIVERY', (payload) => {
+    socket.broadcast.emit('DELIVERY', payload);
   });
 });
 
-const listen = () => {
-  server.listen(PORT);
-  console.log('listening on port:', PORT)
-}
 
-listen();
+server.listen(PORT);
