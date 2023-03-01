@@ -2,9 +2,9 @@
   "name": "caps",
   "version": "1.0.0",
   "description": "",
-  "main": "hub.js",
+  "main": "./server/index.js",
   "scripts": {
-    "start": "node hub.js",
+    "start": "node ./server/index.js",
     "db:config": "sequelize init:config",
     "db:create": "sequelize db:create",
     "test-watch": "NODE_ENV=test jest --verbose --coverage --watchAll",
@@ -29,8 +29,9 @@
     "pg": "^8.6.0",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1",
     "sqlite3": "^5.0.2",
     "supertest": "^6.1.3"
   }
 }
-
