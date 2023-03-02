@@ -1,21 +1,15 @@
 'use strict';
 
 // const eventPool = require('../eventPool');
-const handler = require('./handler');
+const { generateOrder, thankDriver } = require('./handlers');
 const { io } = require('socket.io-client');
 
-const socket = io.connect('http://localhost:3001/caps');
+const socket = io('http://localhost:3001/caps');
 
-let store = '1-206-flowers';
-
-socket.emit('JOIN', store);
+socket.on('DELIVERY', (payload) => {
+  thankDriver(payload);
+});
 
 setInterval(() => {
-  let store = chance.company();
-  eventPool.emit('VENDOR', store);
+  generateOrder();
 }, 5000);
-
-socket.on('delivered', (payload) => {
-  console.log(`VENDOR: Thank you for delivering ${payload.orderID}`);
-  process.exit(0);
-});
